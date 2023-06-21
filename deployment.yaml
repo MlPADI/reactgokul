@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gokulreact-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gokulreact
+  template:
+    metadata:
+      labels:
+        app: gokulreact
+    spec:
+      containers:
+        - name: gokulreact
+          image: gokulreact:v1
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gokulreact-service
+spec:
+  selector:
+    app: gokulreact
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
