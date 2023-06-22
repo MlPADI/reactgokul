@@ -21,24 +21,26 @@ jobs:
         run: |
           npm install
           npm run build
+          
+      - name: Docker Login
+        uses: docker/login-action@v2.2.0
+        with:
+          username: "padidaparama"
+          password: "9345746516"
       
-      - name: Build image
+      - name: Build image and push
         run: |
           export SHELL=/bin/bash
           #eval $(minikube -p minikube docker-env)
           docker build -f ./Dockerfile -t gokulreact:v1 .
           echo -n "verifying images:"
           docker images
+          docker push kaninipro/gokulreact:v1
           #docker build -t gokulreact:v1 .
-      - name: Docker Login
-        uses: docker/login-action@v2.2.0
-        with:
-          username: "padidaparama"
-          password: "9345746516"
           
-      - name: Docker push
-        run: |
-          docker push padidaparama/kaninipro/gokulreact:v1
+#      - name: Docker push
+#        run: |
+#          docker push kaninipro/gokulreact:v1
          
           
           
