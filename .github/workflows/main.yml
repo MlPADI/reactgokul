@@ -36,8 +36,8 @@ jobs:
           docker build -f ./Dockerfile -t gokulreact:v1 .
           echo -n "verifying images:"
           docker images
-          docker tag gokulreact:v1 padidaparama/kaninipro/gokulreact:v1
-          docker push padidaparama/kaninipro/gokulreact:v1
+          docker tag gokulreact:v1 padidaparama/gokulreact:v1
+          docker push padidaparama/gokulreact:v1
           
 #      - name: Docker push
 #        run: |
