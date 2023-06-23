@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gokulreact
-          image: gokulreact:v1
+          image: padidaparama/gokulreact:v1
           ports:
             - containerPort: 80
 ---
