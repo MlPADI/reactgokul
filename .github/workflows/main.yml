@@ -17,10 +17,10 @@ jobs:
         with:
           node-version: 14
         
-      - name: Build NPM Project
-        run: |
-          npm install
-          npm run build
+#      - name: Build NPM Project
+#        run: |
+#          npm install
+#          npm run build
           
       - name: Docker Login
         uses: docker/login-action@v2.2.0
