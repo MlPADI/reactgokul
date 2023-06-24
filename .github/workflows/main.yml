@@ -11,12 +11,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v2.0
-        with:
-          version: 'v1.24.0' # default is latest stable
-        id: install
                   
       - name: Docker Login
         uses: docker/login-action@v2.2.0
@@ -51,7 +45,14 @@ jobs:
           
       - name: Update kubeconfig file
         run: |
-          aws eks update-kubeconfig --name gokuldemo1
+          kubectl config use-context gokuldemo1
+          aws eks update-kubeconfig --regionus-east-1 --name gokuldemo1
+          
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.24.0' # default is latest stable
+        id: install
 
       - name: Deploy to EKS
         run: |
