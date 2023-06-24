@@ -45,7 +45,7 @@ jobs:
           
       - name: Update kubeconfig file
         run: |
-          aws eks update-kubeconfig --regionus-east-1 --name gokuldemo1
+          aws eks update-kubeconfig --region us-east-1 --name gokuldemo1
           kubectl config get-contexts
           kubectl config use-context gokuldemo1
           
