@@ -45,8 +45,9 @@ jobs:
           
       - name: Update kubeconfig file
         run: |
-          kubectl config use-context gokuldemo1
           aws eks update-kubeconfig --regionus-east-1 --name gokuldemo1
+          kubectl config get-contexts
+          kubectl config use-context gokuldemo1
           
       - name: Install kubectl
         uses: azure/setup-kubectl@v2.0
