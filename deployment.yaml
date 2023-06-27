@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gokulreact-deployment
+  name: gokulreact-dep
 spec:
   replicas: 3
   selector:
@@ -16,17 +16,17 @@ spec:
         - name: gokulreact
           image: padidaparama/gokulreact:v1
           ports:
-            - containerPort: 80
+            - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: gokulreact-service
+  name: gokulreact-sev
 spec:
   selector:
     app: gokulreact
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 3000
   type: LoadBalancer
