@@ -26,28 +26,28 @@ jobs:
 #          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 #          aws-region: us-east-1
       
-      - name: Build image and push
-        run: |
-          export SHELL=/bin/bash
-          #eval $(minikube -p minikube docker-env)
-          docker build -f ./Dockerfile -t gokulreact:v1 .
-          echo -n "verifying images:"
-          docker images
-          docker tag gokulreact:v1 padidaparama/gokulreact:v1
-          docker push padidaparama/gokulreact:v1
-          
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: us-east-1
-          
-#      - name: Update kubeconfig file
+#      - name: Build image and push
 #        run: |
-#          aws eks update-kubeconfig --region us-east-1 --name gokuldemo1
-#          kubectl config get-contexts
-#          #kubectl config use-context gokuldemo1
+#          export SHELL=/bin/bash
+#          #eval $(minikube -p minikube docker-env)
+#          docker build -f ./Dockerfile -t gokulreact:v1 .
+#          echo -n "verifying images:"
+#          docker images
+#          docker tag gokulreact:v1 padidaparama/gokulreact:v1
+#          docker push padidaparama/gokulreact:v1
+          
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
+      - name: Update kubeconfig file
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name gokul-test
+          kubectl config get-contexts
+          #kubectl config use-context gokuldemo1
           
 #      - name: Install kubectl
 #        uses: azure/setup-kubectl@v2.0
@@ -55,13 +55,13 @@ jobs:
 #          version: 'v1.24.0' # default is latest stable
 #        id: install
 
-      - name: Connect to GKE
-        uses: Swibi/connect-to-gke@v2.1
-        with:
-          GCP_SA_KEY: "{\"type\":\"service_account\",\"project_id\":\"gokul-gcp-02\",\"private_key_id\":\"b2520b706ba0425b7607d43ece1c54bd24b19f0f\",\"private_key\":\"-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMWPQsQ0v6p1MT\\n0Q/qHhxjAtowoBbtRykwVFg7y9fU8K3iM7xUCZrmOYOfjmJd3geW+UHXmCTKio6g\\nsjzdU0p9Xx67pY8xcDerLdRxejcq4EhRQ00+r1px92FMtuPQVuo8ho2heUIZQIZO\\nOC55C2xLpqkM9wpMKayfMABNBGLsY9KMUWtxTwus3J2xDpx+CCrzRmKrIEQE6uXu\\nEocSAuzSej3wYgTAUzYEcg7iBjZnASzyXITtG7KXyr5mpMCkGsI3K59UeNDKoHm4\\nhYUDfwRGWIeRgisqkKZUGU4y1B1q8tAGDO7ZkStZg8T5LcOXboWnrgpWXH96MRPb\\neyrwqMUTAgMBAAECggEAO+KdvBMEwzIiEJ6l8VBdtU5yrulbjrHaCkXNjciROeBG\\ntRHAUUh3UpzsS+goP6X/x2jIuOvnbEvqvIE/gQUVwWQM16UPL8fZKJtHtPHCFRih\\nWN9GVeaBtQBwTVETtkyiXJZ6DyZADrJwKaAhTmvgktMGm7wSEnvsEMK6c9ejPe8E\\n3eKvcGmLaSMgpzEAZfd7+c1CYy+yLXj81wmi6KeVYDNb36o8gV6mVATrhkM+OAn6\\nul8JYET7R3P19qqbR3m8O0ZfK8HxrUU2XSizeMO7bunu/XZ0jrs6oFruIWc7+t4j\\nWKN9WqcveHvxB7+mEy6kgdVAKN2nJ4CvoBiPFFPnYQKBgQDwX3Xg72lbIocGWAEz\\n1O7dTBRhiGkOVdvsYYqT+cFOwpeN6BAWplWjowYWlxMz7Tj3SU1N+yNm9hC9sII6\\n5gOJWjsKJ2H9a63o2JQdP6lan7FIYIqBpFxq3JK7XOnXmEVwyPhxwGQleRCfRcjr\\n8Glbduv+2XVXL8YAEpSDZ9uiaQKBgQDZoeuZLnhduwFaiTOyF2LNFudpcZi4llt6\\n5RVtFFS7JjBQ0mpYyx6oqHMYABvsff3PLlqwEDIYwwhwe0QBivJN4gzVqTINJmSx\\n8+wsAQ2CX+kYHkK7V8SfVaYamiECsicJroAHSxK1o7rdWqp57/KkMwb07vMnQySG\\nN/UIxa0EGwKBgCF7mqb3knxwZdCbZ6d5rMBEvb4MS14E1bqqp6wPKT84WfYZckxF\\nZT6DEfEJoFImZD4GBu+q4PaRpilWMf3UVn/GgtzaOYscecAqkw8z8/o8rmw/jmua\\nooj8KrBQs/4lJt8cD4eA3jJeF9On2+IJvhNQkHUSg4bej70o2WkoiW6pAoGBAJI/\\n3rxU3yxVxCYcN3JBhvK9potUfEXnPNiMY+aml/4gPq3BiRfcf+DlOlrxj9JQJKT6\\nyJSyfYfoYJ5+J4hF4Gj4NJnMlscBev+fJKG5n2NyoojDpSKSa56LhxEvbGmMYPF/\\no6fDCnKn8aZZDGDfH5a6d71Xam2DEGNl7TOU65zrAoGAP/xYPkYcuRdHodKWQ0f+\\nRSDK4c8POijkx2G1Vc6gH3GflME6NAfcj7hqgQY1KY024pCDFutH54BtVuoyEJn1\\nXgyMs0cG85e8YEvnUzv8T28Fia2JBNGzR1ZsC8B5oOfnHdlFsLsZJ7fFBf6tSrzH\\nvxLTrVHtqyIyEjodLY+fSQs=\\n-----END PRIVATE KEY-----\\n\",\"client_email\":\"gokul-devops@gokul-gcp-02.iam.gserviceaccount.com\",\"client_id\":\"103098249508482156750\",\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\",\"token_uri\":\"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/gokul-devops%40gokul-gcp-02.iam.gserviceaccount.com\",\"universe_domain\":\"googleapis.com\"}"
-          GCP_PROJECT_ID: gokul-gcp-02
-          GKE_CLUSTER: autopilot-cluster-1
-          GKE_LOCATION: us-east1
+#      - name: Connect to GKE
+#        uses: Swibi/connect-to-gke@v2.1
+#        with:
+#          GCP_SA_KEY: "{\"type\":\"service_account\",\"project_id\":\"gokul-gcp-02\",\"private_key_id\":\"b2520b706ba0425b7607d43ece1c54bd24b19f0f\",\"private_key\":\"-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMWPQsQ0v6p1MT\\n0Q/qHhxjAtowoBbtRykwVFg7y9fU8K3iM7xUCZrmOYOfjmJd3geW+UHXmCTKio6g\\nsjzdU0p9Xx67pY8xcDerLdRxejcq4EhRQ00+r1px92FMtuPQVuo8ho2heUIZQIZO\\nOC55C2xLpqkM9wpMKayfMABNBGLsY9KMUWtxTwus3J2xDpx+CCrzRmKrIEQE6uXu\\nEocSAuzSej3wYgTAUzYEcg7iBjZnASzyXITtG7KXyr5mpMCkGsI3K59UeNDKoHm4\\nhYUDfwRGWIeRgisqkKZUGU4y1B1q8tAGDO7ZkStZg8T5LcOXboWnrgpWXH96MRPb\\neyrwqMUTAgMBAAECggEAO+KdvBMEwzIiEJ6l8VBdtU5yrulbjrHaCkXNjciROeBG\\ntRHAUUh3UpzsS+goP6X/x2jIuOvnbEvqvIE/gQUVwWQM16UPL8fZKJtHtPHCFRih\\nWN9GVeaBtQBwTVETtkyiXJZ6DyZADrJwKaAhTmvgktMGm7wSEnvsEMK6c9ejPe8E\\n3eKvcGmLaSMgpzEAZfd7+c1CYy+yLXj81wmi6KeVYDNb36o8gV6mVATrhkM+OAn6\\nul8JYET7R3P19qqbR3m8O0ZfK8HxrUU2XSizeMO7bunu/XZ0jrs6oFruIWc7+t4j\\nWKN9WqcveHvxB7+mEy6kgdVAKN2nJ4CvoBiPFFPnYQKBgQDwX3Xg72lbIocGWAEz\\n1O7dTBRhiGkOVdvsYYqT+cFOwpeN6BAWplWjowYWlxMz7Tj3SU1N+yNm9hC9sII6\\n5gOJWjsKJ2H9a63o2JQdP6lan7FIYIqBpFxq3JK7XOnXmEVwyPhxwGQleRCfRcjr\\n8Glbduv+2XVXL8YAEpSDZ9uiaQKBgQDZoeuZLnhduwFaiTOyF2LNFudpcZi4llt6\\n5RVtFFS7JjBQ0mpYyx6oqHMYABvsff3PLlqwEDIYwwhwe0QBivJN4gzVqTINJmSx\\n8+wsAQ2CX+kYHkK7V8SfVaYamiECsicJroAHSxK1o7rdWqp57/KkMwb07vMnQySG\\nN/UIxa0EGwKBgCF7mqb3knxwZdCbZ6d5rMBEvb4MS14E1bqqp6wPKT84WfYZckxF\\nZT6DEfEJoFImZD4GBu+q4PaRpilWMf3UVn/GgtzaOYscecAqkw8z8/o8rmw/jmua\\nooj8KrBQs/4lJt8cD4eA3jJeF9On2+IJvhNQkHUSg4bej70o2WkoiW6pAoGBAJI/\\n3rxU3yxVxCYcN3JBhvK9potUfEXnPNiMY+aml/4gPq3BiRfcf+DlOlrxj9JQJKT6\\nyJSyfYfoYJ5+J4hF4Gj4NJnMlscBev+fJKG5n2NyoojDpSKSa56LhxEvbGmMYPF/\\no6fDCnKn8aZZDGDfH5a6d71Xam2DEGNl7TOU65zrAoGAP/xYPkYcuRdHodKWQ0f+\\nRSDK4c8POijkx2G1Vc6gH3GflME6NAfcj7hqgQY1KY024pCDFutH54BtVuoyEJn1\\nXgyMs0cG85e8YEvnUzv8T28Fia2JBNGzR1ZsC8B5oOfnHdlFsLsZJ7fFBf6tSrzH\\nvxLTrVHtqyIyEjodLY+fSQs=\\n-----END PRIVATE KEY-----\\n\",\"client_email\":\"gokul-devops@gokul-gcp-02.iam.gserviceaccount.com\",\"client_id\":\"103098249508482156750\",\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\",\"token_uri\":\"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/gokul-devops%40gokul-gcp-02.iam.gserviceaccount.com\",\"universe_domain\":\"googleapis.com\"}"
+#          GCP_PROJECT_ID: gokul-gcp-02
+#          GKE_CLUSTER: autopilot-cluster-1
+#          GKE_LOCATION: us-east1
 
       
           
