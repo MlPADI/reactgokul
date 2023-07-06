@@ -1,4 +1,4 @@
-aopname: Build and Publish to S3
+name: Build and Publish to S3
 on:
   push:
     branches:
