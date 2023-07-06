@@ -1,48 +1,52 @@
-name: Build and Publish to S3
+name: Build and Publish Artifact
+
 on:
   push:
     branches:
-      - main  # Change this to your branch name
+      - main
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Build
-      run: npm run build
+      - name: Build React App
+        run: npm run build
 
-    - name: Publish artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: build
-        path: /home/runner/work/reactgokul/reactgokul
-      
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1  # Replace with your AWS region
+      - name: Archive Build Artifact
+        run: tar -czf build.tar.gz build/
 
-    - name: Download artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: build
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build.tar.gz
 
-    - name: Extract artifact
-      run: tar xf build.tar.gz
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
 
-    - name: Upload to S3 bucket
-      run: aws s3 sync ./build s3:aoptestforgo
+      - name: Extract Artifact
+        run: tar xf build.tar.gz
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload to S3 Bucket
+        run: aws s3 cp build/ s3://aoptestforgo/ --recursive
